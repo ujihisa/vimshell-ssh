@@ -17,15 +17,15 @@ function! vimshell_ssh#pre(input, context)
   execute printf('new scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
   wincmd W
 
+  let b:vim_ran = 1
   return ''
 endfunction
 
 function! vimshell_ssh#post(input, context)
-  "if a:input !~# '^vim\s'
-  if a:input != ''
-    return
+  if a:input == '' && s:get('b:vim_ran')
+    let b:vim_ran = 0
+    wincmd w
   endif
-  wincmd w
 endfunction
 
 function! s:args2hostname(args)
@@ -46,4 +46,8 @@ function! s:args2hostname(args)
     endif
   endwhile
   return join([user, machine, port], '')
+endfunction
+
+function! s:get(varname)
+  return exists(a:varname) ? eval(a:varname) : 0
 endfunction
