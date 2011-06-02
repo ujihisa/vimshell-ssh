@@ -25,6 +25,7 @@ function! vimshell_ssh#post(input, context)
   if a:input == '' && s:get('b:vim_ran')
     let b:vim_ran = 0
     wincmd w
+    stopinsert
   endif
 endfunction
 
