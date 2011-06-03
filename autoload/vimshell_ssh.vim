@@ -29,6 +29,12 @@ function! vimshell_ssh#post(input, context)
   endif
 endfunction
 
+" s:args2hostname(['ssh', 'example.com'])
+" => 'example.com'
+" s:args2hostname(['ssh', '-p', '2222', 'example.com'])
+" => 'example.com:2222'
+" s:args2hostname(['ssh', '-u', 'ujihisa', 'example.com'])
+" => 'ujihisa@example.com'
 function! s:args2hostname(args)
   let xs = copy(a:args)
   call remove(xs, 0) " 1st item is always 'ssh'
