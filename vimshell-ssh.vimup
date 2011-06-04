@@ -1,0 +1,16 @@
+"script_name": vimshell-ssh
+#"script_id": "3318"
+"script_type": ftplugin
+"script_package": "{script_name}-{version}.tgz"
+"required_vim_version": '7.3'
+"summary": You can run Vim over ssh on Vim!
+"detailed_description": |
+  A vimshell plugin that enables you to use "vim" command over ssh on vimshell.
+
+  See the detail below.
+  https://github.com/ujihisa/vimshell-ssh
+"install_details": |
+  After you install Shougo's vimshell and its dependencies, unarchive the tgz file into a directory that is under &rtp of your Vim, including ~/.vim dir.
+"versions":
+  - '1.0': Initial upload
+# vim: filetype=yaml
