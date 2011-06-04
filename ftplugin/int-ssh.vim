@@ -1,2 +1,2 @@
-call vimshell#hook#set('preinput', ['vimshell_ssh#pre'])
-call vimshell#hook#set('postinput', ['vimshell_ssh#post'])
+call vimshell#hook#add('preinput', 'vimshell_ssh', 'vimshell_ssh#pre')
+call vimshell#hook#add('postinput', 'vimshell_ssh', 'vimshell_ssh#post')
