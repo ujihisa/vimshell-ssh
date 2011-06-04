@@ -1,5 +1,5 @@
 "script_name": vimshell-ssh
-#"script_id": "3318"
+"script_id": "3614"
 "script_type": ftplugin
 "script_package": "{script_name}-{version}.tgz"
 "required_vim_version": '7.3'
