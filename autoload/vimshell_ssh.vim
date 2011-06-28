@@ -26,6 +26,9 @@ function! vimshell_ssh#post(input, context)
     let b:vim_ran = 0
     wincmd w
     stopinsert
+  elseif exists('*neocomplcache#is_enabled') && neocomplcache#is_enabled()
+    " ssh response always delays, so you have to close popup manually.
+    call neocomplcache#close_popup()
   endif
 endfunction
 
