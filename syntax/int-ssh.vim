@@ -4,7 +4,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match IntSshPrompt '^.\{-}\$'
+syn match IntSshPrompt '^.\{-}@.\{-}\$'
 
 if has('gui_running')
   hi IntSshPrompt  gui=UNDERLINE guifg=#80ffff guibg=NONE
