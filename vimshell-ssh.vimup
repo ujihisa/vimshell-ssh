@@ -14,5 +14,6 @@
 "versions":
   - '1.1': |
     * Follows changes in vimshell core
+    * Supports empty file name to open the directory
   - '1.0': Initial upload
 # vim: filetype=yaml

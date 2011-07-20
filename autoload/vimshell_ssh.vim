@@ -1,5 +1,5 @@
 function! vimshell_ssh#pre(input, context)
-  if a:input !~# '^vim\s'
+  if a:input !~# '^vim\>'
     return a:input
   endif
 
@@ -12,7 +12,8 @@ function! vimshell_ssh#pre(input, context)
   endwhile
   let dir = split(chunk, "\n")[1]
   let dir = substitute(dir, "\r", '', '')
-  let file = substitute(a:input, '^vim\s\+', '', '')
+  let file = substitute(a:input, '^vim\s*', '', '')
+  echomsg file
 
   execute printf('new scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
   wincmd W
