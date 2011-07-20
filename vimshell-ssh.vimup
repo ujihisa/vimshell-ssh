@@ -12,5 +12,7 @@
 "install_details": |
   After you install Shougo's vimshell and its dependencies, unarchive the tgz file into a directory that is under &rtp of your Vim, including ~/.vim dir.
 "versions":
+  - '1.1': |
+    * Follows changes in vimshell core
   - '1.0': Initial upload
 # vim: filetype=yaml

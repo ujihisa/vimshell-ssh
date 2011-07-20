@@ -6,7 +6,7 @@ function! vimshell_ssh#pre(input, context)
   "call vimshell#interactive#send_string("pwd\<Cr>")
   call b:interactive.process.write("pwd\<Cr>")
   let chunk = ''
-  while chunk == ''
+  while stridx(chunk, "\n") < 0
     let chunk = b:interactive.process.read(1000, 40)
     "sleep 1m
   endwhile
