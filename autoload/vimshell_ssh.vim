@@ -15,7 +15,8 @@ function! vimshell_ssh#pre(input, context)
   let file = substitute(a:input, '^vim\s*', '', '')
   echomsg file
 
-  execute printf('new scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
+  call vimshell#split_nicely()
+  execute printf('edit scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
   wincmd W
 
   let b:vim_ran = 1
