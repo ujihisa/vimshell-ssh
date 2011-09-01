@@ -14,7 +14,7 @@ function! s:source.get_keyword_pos(cur_text)  "{{{
 endfunction "}}}
 
 function! s:ls(x)
-  let chunk = s:remoterun(printf("ls -1 --color=never %s 2>/dev/null", string(a:x)))
+  let chunk = s:remoterun(printf("/bin/ls -1 --color=never %s 2>/dev/null", string(a:x)))
   "return chunk
   return split(chunk, "\n")[1:-2]
 endfunction
