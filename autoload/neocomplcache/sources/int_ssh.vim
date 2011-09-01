@@ -38,6 +38,9 @@ function! s:remoterun(cmd)
 endfunction
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
+  if !s:is_on_prompt_line()
+    return []
+  endif
   let dir = fnamemodify(a:cur_keyword_str, ':h')
   let list = []
   for f in s:ls(dir)
@@ -46,6 +49,10 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
   endfor
   return list
 endfunction "}}}
+
+function! s:is_on_prompt_line()
+  return getline('.')[0 : getpos('.')[2]] =~ '^.*\$ '
+endfunction
 
 function! neocomplcache#sources#int_ssh#define() "{{{
   return s:source
