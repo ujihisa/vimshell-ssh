@@ -27,11 +27,11 @@ function! s:remoterun(cmd)
   "  endif
   "endwhile
   "echomsg a:cmd
-  call b:interactive.process.write(a:cmd . "\<Cr>")
+  call b:interactive.process.stdout.write(a:cmd . "\<Cr>")
   "return b:interactive.process.read_lines(1000, 40)
   let chunk = ''
   while stridx(chunk, "\n") < 0
-    let chunk = b:interactive.process.read(1000, 40)
+    let chunk = b:interactive.process.stdout.read(1000, 40)
     "sleep 1m
   endwhile
   return substitute(chunk, "\r", '', 'g')

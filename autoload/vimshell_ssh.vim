@@ -4,10 +4,10 @@ function! vimshell_ssh#pre(input, context)
   endif
 
   "call vimshell#interactive#send_string("pwd\<Cr>")
-  call b:interactive.process.write("pwd\<Cr>")
+  call b:interactive.process.stdout.write("pwd\<Cr>")
   let chunk = ''
   while stridx(chunk, "\n") < 0
-    let chunk = b:interactive.process.read(1000, 40)
+    let chunk = b:interactive.process.stdout.read(1000, 40)
     "sleep 1m
   endwhile
   let dir = split(chunk, "\n")[1]
