@@ -13,7 +13,7 @@ function! vimshell_ssh#pre(input, context)
   let dir = split(chunk, "\n")[1]
   let dir = substitute(dir, "\r", '', '')
   let file = substitute(a:input, '^vim\s*', '', '')
-  echomsg file
+  "echomsg file
 
   let [new_pos, old_pos] = vimshell#split(g:vimshell_split_command)
   execute printf('edit scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
