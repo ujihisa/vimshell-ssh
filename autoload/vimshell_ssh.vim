@@ -16,7 +16,12 @@ function! vimshell_ssh#pre(input, context)
   "echomsg file
 
   let [new_pos, old_pos] = vimshell#split(g:vimshell_split_command)
-  execute printf('edit scp://%s//%s/%s', s:args2hostname(b:interactive.args), dir, file)
+  let protocol = 'scp'
+  execute printf('edit %s://%s//%s/%s',
+        \ protocol,
+        \ s:args2hostname(b:interactive.args),
+        \ dir,
+        \ file)
   call vimshell#restore_pos(old_pos)
 
   let b:vim_ran = 1
