@@ -20,6 +20,7 @@ function! vimshell_ssh#pre(input, context)
   let cmdprotocol = exists('*unite#sources#ssh#define') ?
         \ 'Unite ssh' :
         \ 'edit scp'
+  let cmdprotocol = 'edit scp' " temporary
   execute printf('%s://%s//%s/%s',
         \ cmdprotocol,
         \ s:args2hostname(b:interactive.args),
