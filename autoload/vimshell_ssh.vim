@@ -16,9 +16,12 @@ function! vimshell_ssh#pre(input, context)
   "echomsg file
 
   let [new_pos, old_pos] = vimshell#split(g:vimshell_split_command)
-  let protocol = 'scp'
-  execute printf('edit %s://%s//%s/%s',
-        \ protocol,
+  " NOTE: passive check. Should we check aggressively?
+  let cmdprotocol = exists('*unite#sources#ssh#define') ?
+        \ 'Unite ssh' :
+        \ 'edit scp'
+  execute printf('%s://%s//%s/%s',
+        \ cmdprotocol,
         \ s:args2hostname(b:interactive.args),
         \ dir,
         \ file)

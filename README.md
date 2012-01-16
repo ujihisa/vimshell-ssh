@@ -11,15 +11,22 @@
 * vimshell
 * netrw (should be built-in in your Vim)
 
+Optional
+
+* unite-ssh (this replaces netrw)
+    * unite.vim (unite-ssh's dependency)
+
 ## known issues
 
 * netrw uses `:!`
     * solution:
     * use [my forked version of netrw](https://github.com/ujihisa/netrw.vim)
+    * or use unite-ssh
 * netrw changes options like cursorline
     * solution:
     * write `let g:netrw_cursorline = 0` in your vimrc
     * or use [my forked version of netrw](https://github.com/ujihisa/netrw.vim)
+    * or use unite-ssh
 * after vim command the ssh iexe buffer cursor location will be still in the vim command's line
 * for some reasin vim command failed on my remote zsh
     * run bash on the server just in case
