@@ -15,6 +15,7 @@ Optional
 
 * unite-ssh (this replaces netrw)
     * unite.vim (unite-ssh's dependency)
+    * vimfiler (unite-ssh's dependency)
 
 ## known issues
 
