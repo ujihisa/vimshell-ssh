@@ -9,9 +9,14 @@ function! vimshell_ssh#pre(input, context)
   call b:interactive.process.stdout.write("pwd\<Cr>")
   let chunk = ''
   while len(split(chunk, "\n")) < 2
-    let chunk = b:interactive.process.stdout.read(1000, 40)
+    let chunk .= b:interactive.process.stdout.read(1000, 40)
     "sleep 1m
+
+    if g:vimshell_ssh#enable_debug
+      echomsg string(chunk)
+    endif
   endwhile
+
   if g:vimshell_ssh#enable_debug
     echomsg string(chunk)
   endif
@@ -26,15 +31,20 @@ function! vimshell_ssh#pre(input, context)
 
   let [new_pos, old_pos] = vimshell#split(g:vimshell_split_command)
   " NOTE: passive check. Should we check aggressively?
-  let cmdprotocol = exists('*unite#sources#ssh#define') ?
-        \ 'Unite ssh' :
-        \ 'edit scp'
-  let cmdprotocol = 'edit scp' " temporary
-  let command = printf('%s://%s//%s/%s',
-        \ cmdprotocol,
-        \ s:args2hostname(b:interactive.args),
-        \ dir,
-        \ file)
+
+  if !empty(unite#get_all_sources('ssh')) && exists(':VimFiler')
+    let command = printf('%s://%s/%s/%s',
+          \ 'VimFiler ssh',
+          \ s:args2hostname(b:interactive.args),
+          \ dir,
+          \ file)
+  else
+    let command = printf('%s://%s//%s/%s',
+          \ 'edit scp',
+          \ s:args2hostname(b:interactive.args),
+          \ dir,
+          \ file)
+  endif
   if g:vimshell_ssh#enable_debug
     echomsg command
   endif
