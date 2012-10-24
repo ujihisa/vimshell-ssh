@@ -1,12 +1,11 @@
 let g:vimshell_ssh#enable_debug = get(g:, 'vimshell_ssh#enable_debug', 0)
 
 function! vimshell_ssh#pre(input, context)
-  if a:input !~# '^vim\>'
+  if b:interactive.command ==# 'ssh' && a:input !~# '^vim\>'
     return a:input
   endif
 
-  "call vimshell#interactive#send_string("pwd\<Cr>")
-  call b:interactive.process.stdout.write("pwd\<Cr>")
+  call b:interactive.process.stdout.write("pwd\<CR>")
   let chunk = ''
   while len(split(chunk, "\n")) < 2
     let chunk .= b:interactive.process.stdout.read(1000, 40)
@@ -24,9 +23,10 @@ function! vimshell_ssh#pre(input, context)
   let dir = split(chunk, "\n")[1]
   let dir = substitute(dir, "\r", '', '')
   let file = substitute(a:input, '^vim\s*', '', '')
+  let file = substitute(file, '\r\|\n', '', 'g')
 
   if g:vimshell_ssh#enable_debug
-    echomsg file
+    echomsg string(file)
   endif
 
   let [new_pos, old_pos] = vimshell#split(g:vimshell_split_command)
@@ -51,16 +51,24 @@ function! vimshell_ssh#pre(input, context)
   execute command
   call vimshell#restore_pos(old_pos)
 
+  call append('.', '')
+  call cursor(line('.')+1, 0)
+  let b:interactive.output_pos = getpos('.')
+
+  call vimshell#interactive#check_current_output()
+
   let b:vim_ran = 1
   return ''
 endfunction
 
 function! vimshell_ssh#post(input, context)
-  if a:input == '' && s:get('b:vim_ran')
-    let b:vim_ran = 0
-    wincmd w
-    stopinsert
+  if !(a:input == '' && s:get('b:vim_ran'))
+    return
   endif
+
+  let b:vim_ran = 0
+  wincmd w
+  stopinsert
 endfunction
 
 " s:args2hostname(['ssh', 'example.com'])
