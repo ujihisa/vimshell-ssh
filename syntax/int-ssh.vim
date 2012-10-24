@@ -4,7 +4,7 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match vimShellSshPrompt '^.\{-}@.\{-}\$'
+syn match vimShellSshPrompt '^.\{-}@.\{-}[$%] '
 
 if has('gui_running')
   hi vimShellSshPrompt  gui=UNDERLINE guifg=#80ffff guibg=NONE

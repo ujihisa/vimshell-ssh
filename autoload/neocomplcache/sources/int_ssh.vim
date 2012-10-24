@@ -10,11 +10,15 @@ function! s:source.finalize() "{{{
 endfunction "}}}
 
 function! s:source.get_keyword_pos(cur_text)  "{{{
-  return neocomplcache#sources#filename_complete#define().get_keyword_pos(a:cur_text)
+  let pattern = neocomplcache#get_keyword_pattern_end('filename')
+  let [cur_keyword_pos, _] =
+        \ neocomplcache#match_word(a:cur_text, pattern)
+  return cur_keyword_pos
 endfunction "}}}
 
 function! s:ls(x)
-  let chunk = s:remoterun(printf("/bin/ls -1 --color=never %s 2>/dev/null", string(a:x)))
+  let chunk = s:remoterun(
+        \ printf("/bin/ls -1F %s 2>/dev/null", string(a:x)))
   "return chunk
   return split(chunk, "\n")[1:-2]
 endfunction
@@ -34,6 +38,10 @@ function! s:remoterun(cmd)
     let chunk = b:interactive.process.stdout.read(1000, 40)
     "sleep 1m
   endwhile
+
+  " Delete colors.
+  let chunk = substitute(chunk, '\e\[[0-9;]*m', '', 'g')
+
   return substitute(chunk, "\r", '', 'g')
 endfunction
 
@@ -41,17 +49,26 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
   if !s:is_on_prompt_line()
     return []
   endif
-  let dir = fnamemodify(a:cur_keyword_str, ':h')
+
+  let dir = a:cur_keyword_str =~ '/' ?
+        \ fnamemodify(a:cur_keyword_str, ':h') . '/' : ''
   let list = []
-  for f in s:ls(dir)
-    let name = dir . '/' . f
-    call add(list, {'word': name, 'menu': '[ssh] ' . name})
+  for f in s:ls(fnamemodify(a:cur_keyword_str, ':h'))
+    let name = dir . f
+
+    call add(list, { 'word': substitute(name, '[*|@]$', '', ''),
+          \ 'menu': '[ssh] ' . name })
   endfor
-  return list
+
+  return neocomplcache#keyword_filter(list, a:cur_keyword_str)
 endfunction "}}}
 
 function! s:is_on_prompt_line()
-  return getline('.')[0 : getpos('.')[2]] =~ '^.*\$ '
+  return s:get_line() =~ '^.*[$%] '
+endfunction
+
+function! s:get_line()
+  return substitute(getline('.'), '\e\[[0-9;]*m', '', 'g')
 endfunction
 
 function! neocomplcache#sources#int_ssh#define() "{{{
