@@ -4,12 +4,12 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match IntSshPrompt '^.\{-}@.\{-}\$'
+syn match vimShellSshPrompt '^.\{-}@.\{-}\$'
 
 if has('gui_running')
-  hi IntSshPrompt  gui=UNDERLINE guifg=#80ffff guibg=NONE
+  hi vimShellSshPrompt  gui=UNDERLINE guifg=#80ffff guibg=NONE
 else
-  hi def link IntSshPrompt Identifier
+  hi def link vimShellSshPrompt Identifier
 endif
 
 
