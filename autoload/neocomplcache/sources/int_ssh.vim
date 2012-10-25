@@ -19,32 +19,10 @@ function! s:source.get_keyword_pos(cur_text)  "{{{
 endfunction "}}}
 
 function! s:ls(x)
-  let chunk = s:remoterun(
+  let chunk = vimshell_ssh#remoterun(
         \ printf("/bin/ls -1F %s 2>/dev/null", string(a:x)))
   "return chunk
-  return split(chunk, "\n")[1:-2]
-endfunction
-
-function! s:remoterun(cmd)
-  "while 1
-  "  let chunk = b:interactive.process.read_lines(1000, 40)
-  "  if chunk != []
-  "    return chunk
-  "  endif
-  "endwhile
-  "echomsg a:cmd
-  call b:interactive.process.stdout.write(a:cmd . "\<Cr>")
-  "return b:interactive.process.read_lines(1000, 40)
-  let chunk = ''
-  while stridx(chunk, "\n") < 0
-    let chunk = b:interactive.process.stdout.read(1000, 40)
-    "sleep 1m
-  endwhile
-
-  " Delete colors.
-  let chunk = substitute(chunk, '\e\[[0-9;]*m', '', 'g')
-
-  return substitute(chunk, "\r", '', 'g')
+  return split(chunk, "\n")
 endfunction
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
@@ -74,7 +52,7 @@ function! s:get_line()
 endfunction
 
 function! neocomplcache#sources#int_ssh#define() "{{{
-  return s:source
+  return has('reltime') ? s:source : {}
 endfunction "}}}
 
 " vim: ts=2 sw=2 sts=2 foldmethod=marker

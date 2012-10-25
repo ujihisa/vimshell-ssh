@@ -1,27 +1,16 @@
 let g:vimshell_ssh#enable_debug = get(g:, 'vimshell_ssh#enable_debug', 0)
 
 function! vimshell_ssh#pre(input, context)
-  if b:interactive.command ==# 'ssh' && a:input !~# '^vim\>'
+  if (b:interactive.command ==# 'ssh' && a:input !~# '^vim\>')
+        \ || !has('reltime')
+        \ || !has_key(b:interactive.prompt_history, line('.'))
     return a:input
   endif
 
-  call b:interactive.process.stdout.write("pwd\<CR>")
-  let chunk = ''
-  while len(split(chunk, "\n")) < 2
-    let chunk .= b:interactive.process.stdout.read(1000, 40)
-    "sleep 1m
+  let prompt = b:interactive.prompt_history[line('.')]
 
-    if g:vimshell_ssh#enable_debug
-      echomsg string(chunk)
-    endif
-  endwhile
-
-  if g:vimshell_ssh#enable_debug
-    echomsg string(chunk)
-  endif
-
-  let dir = split(chunk, "\n")[1]
-  let dir = substitute(dir, "\r", '', '')
+  let dir = vimshell_ssh#remoterun('pwd')
+  let dir = substitute(dir, '\r\|\n', '', 'g')
   let file = substitute(a:input, '^vim\s*', '', '')
   let file = substitute(file, '\r\|\n', '', 'g')
 
@@ -49,13 +38,15 @@ function! vimshell_ssh#pre(input, context)
     echomsg command
   endif
   execute command
+
+  sleep 100ms
+
   call vimshell#restore_pos(old_pos)
 
-  call append('.', '')
+  call append('.', prompt)
   call cursor(line('.')+1, 0)
   let b:interactive.output_pos = getpos('.')
-
-  call vimshell#interactive#check_current_output()
+  let b:interactive.prompt_history[line('.')] = prompt
 
   let b:vim_ran = 1
   return ''
@@ -95,6 +86,45 @@ function! s:args2hostname(args)
     endif
   endwhile
   return join([user, machine, port], '')
+endfunction
+
+function! vimshell_ssh#remoterun(cmd)
+  call b:interactive.process.stdout.write(a:cmd . "\<CR>")
+
+  let chunk = ''
+  let start = reltime()
+  while 1
+    let chunk .= b:interactive.process.stdout.read(1000, 100)
+
+    if g:vimshell_ssh#enable_debug
+      echomsg string(chunk)
+    endif
+
+    " Timeout
+    let end = split(reltimestr(reltime(start)))[0] * 700
+    if end > 700
+      break
+    endif
+
+    let chunk = substitute(chunk, '\e\[[0-9;]*m', '', 'g')
+
+    let chunks = split(chunk, "\n")
+    if len(chunks) >= 3 && chunk =~ '[$%] '
+      break
+    endif
+  endwhile
+
+  " Delete colors.
+  let chunk = substitute(chunk, '\e\[[0-9;]*m', '', 'g')
+
+  let chunk = join(split(substitute(
+        \ chunk, "\r", '', 'g'), '\n')[1 : -2], "\n")
+
+  if g:vimshell_ssh#enable_debug
+    echomsg string(chunk)
+  endif
+
+  return chunk
 endfunction
 
 function! s:get(varname)
