@@ -4,6 +4,8 @@ let s:source = {
       \ 'filetypes': { 'int-ssh': 1 },
       \ }
 function! s:source.initialize() "{{{
+  call neocomplcache#set_completion_length(self.name,
+        \ g:neocomplcache_auto_completion_start_length)
 endfunction "}}}
 
 function! s:source.finalize() "{{{
