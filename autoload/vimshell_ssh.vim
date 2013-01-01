@@ -1,7 +1,8 @@
 let g:vimshell_ssh#enable_debug = get(g:, 'vimshell_ssh#enable_debug', 0)
 
 function! vimshell_ssh#pre(input, context)
-  if (b:interactive.command ==# 'ssh' && a:input !~# '^vim\>')
+  if b:interactive.command !=# 'ssh'
+        \ || a:input !~# '^vim\>'
         \ || !has('reltime')
         \ || !has_key(b:interactive.prompt_history, line('.'))
     return a:input
