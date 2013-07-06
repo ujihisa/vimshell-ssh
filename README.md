@@ -40,3 +40,7 @@ Optional
 ## Author
 
 Tatsuhiro Ujihisa
+
+## License
+
+MIT
